@@ -1,74 +1,37 @@
-import React, { Fragment, useState } from 'react';
-import './App.css';
-import defaultImg from "./images/default.jpg";
-import nasaCall, {api_key} from "./hooks/nasaCall";
-
-
-function getFormattedDate(date) {
-  let year = date.getFullYear();
-  let month = (1 + date.getMonth()).toString().padStart(2, "0");
-  let day = date.getDate().toString().padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
+import React from "react";
+import "./App.css";
+import defaultImg from "./images/gradient.jpeg";
+import DataPanel from "./components/DataPanel";
+import { Container } from "@material-ui/core";
+import Card from "@material-ui/core/Card";
 
 function App() {
-  const [selectedDate, setSelectedDate] = useState(null);
-
-  
-  const requestConfig = {
-    method: "GET",
-    url: "/planetary/apod",
-    params: {
-      date: selectedDate,
-      api_key,
-    },
-  };
-
-  const [{ data, loading, error }] = nasaCall(requestConfig, {
-    manual: selectedDate === null,
-  });
-
-  const handleSubmit = e =>{
- 
-  }
-
-  const handleChange = (e) => {
-    setSelectedDate(e.target.value);
-    console.debug("Date Changed:", selectedDate);
-  };
-
-  if (loading) return "null";
-  if (error) return "null";
+  // if (loading) return "null";
+  // if (error) return <img src={defaultImg}/>;
+  // if(!data) return <img src={defaultImg}/>;
+  // const isImageValid = data?.url && data?.media_type === "image";
+  // const isVideoValid = data?.url && data?.media_type === "mp3";
 
   return (
-    <div className="container">
-      
-      <div className="hero-image">
-        <section className="masthead" role="img" aria-label="Image Description">
-          <h1>Call to the Stars</h1>
-            {!data && <img src={defaultImg} alt="space"/>}
-            {data?.media_type === "image" && <img src={data?.url} alt="space"/>}
-            <div style={{backgroundImage: data?.url}}></div>
-          <pre>
-            <code>{JSON.stringify({ data, selectedDate }, null, 2)}</code>
-          </pre>
-        </section>
-        
-      </div>
-      
-      <div>
-        <input  
-            type="date"
-            id="picker"
-            name="date"
-            min="1970-01-01"
-            max={getFormattedDate(new Date())}
-            onChange={handleChange}
-          />
-            <button type="submit">Explore</button>
-      </div>
-    </div>
+    <Container fixed>
+      <Card>
+        <div className="container" style={{ backgroundImage: defaultImg }}>
+          <div className="bg">
+            <span className="title">
+              <h1>Call to the Stars</h1>
+            </span>
+            <div>
+              <p>
+                This is a simple implementation of nasa's
+                <a href="https://api.nasa.gov/">nasaAPOD</a> api. Enjoy browsing
+                the dataset.
+              </p>
+            </div>
+            <DataPanel />
+          </div>
+        </div>
+      </Card>
+    </Container>
   );
 }
 
