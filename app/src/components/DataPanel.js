@@ -1,12 +1,15 @@
 import React, { Fragment, useState } from "react";
 import axiosCall, { api_key } from "../hooks/nasaCall";
 import defaultImg from "../images/gradient.jpeg";
+import clsx from "clsx";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import IconButton from "@material-ui/core/IconButton";
+import Collapse from "@material-ui/core/Collapse";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 function getFormattedDate(date) {
   let year = date.getFullYear();
@@ -16,7 +19,26 @@ function getFormattedDate(date) {
   return `${year}-${month}-${day}`;
 }
 
+const dropdown = makeStyles((theme) => ({
+  expand: {
+    transfrom: "rotate(90deg)",
+    marginLeft: "auto",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  expandOpen: {
+    transform: "rotate(180deg)",
+  },
+}));
+
 const DataPanel = () => {
+  const classes = dropdown();
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
   const [config, setconfig] = useState({
     method: "GET",
     url: "/planetary/apod",
@@ -64,15 +86,15 @@ const DataPanel = () => {
         <button type="submit">Explore</button>
       </form>
       <Card>
-        <CardActionArea>
-          <div className="img">
-            {data?.media_type === "image" ? (
-              <img src={data?.url} alt={data.title} />
-            ) : (
-              <img src={defaultImg} />
-            )}
-          </div>
-          <CardContent>
+        <div className="img">
+          {data?.media_type === "image" ? (
+            <img src={data?.url} alt={data.title} />
+          ) : (
+            <img src={defaultImg} />
+          )}
+        </div>
+        <CardContent>
+          <CardActionArea>
             <Typography gutterBottom variant="h5" component="h2">
               {data?.media_type === "image" ? (
                 <p>{data.title}</p>
@@ -80,11 +102,28 @@ const DataPanel = () => {
                 <p>Details</p>
               )}
             </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              {data != null ? <p>{data.explanation}</p> : <p></p>}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
+            <IconButton
+              className={clsx(classes.expand, {
+                [classes.expandOpen]: expanded,
+              })}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              <ExpandMoreIcon />
+            </IconButton>
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
+              <Typography
+                paragraph
+                variant="body2"
+                color="textSecondary"
+                component="p"
+              >
+                {data != null ? <p>{data.explanation}</p> : <p></p>}
+              </Typography>
+            </Collapse>
+          </CardActionArea>
+        </CardContent>
       </Card>
     </div>
   );

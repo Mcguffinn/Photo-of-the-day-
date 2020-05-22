@@ -13,9 +13,9 @@ function App() {
   // const isVideoValid = data?.url && data?.media_type === "mp3";
 
   return (
-    <Container fixed>
+    <Container fixed style={{ backgroundImage: defaultImg }}>
       <Card>
-        <div className="container" style={{ backgroundImage: defaultImg }}>
+        <div className="container">
           <div className="bg">
             <span className="title">
               <h1>Call to the Stars</h1>
