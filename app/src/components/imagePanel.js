@@ -1,83 +1,85 @@
-import React, { Fragment, useState } from "react";
-import "./App.css";
-import axiosCall, { api_key } from "./hooks/nasaCall";
+//Defunct Code
 
-function getFormattedDate(date) {
-  let year = date.getFullYear();
-  let month = (1 + date.getMonth()).toString().padStart(2, "0");
-  let day = date.getDate().toString().padStart(2, "0");
+// import React, { Fragment, useState } from "react";
+// import "./App.css";
+// import axiosCall, { api_key } from "./hooks/nasaCall";
 
-  return `${year}-${month}-${day}`;
-}
+// function getFormattedDate(date) {
+//   let year = date.getFullYear();
+//   let month = (1 + date.getMonth()).toString().padStart(2, "0");
+//   let day = date.getDate().toString().padStart(2, "0");
 
-function App() {
-  // const [selectedDate, setSelectedDate] = useState(null);
-  const [config, setconfig] = useState({
-    method: "GET",
-    url: "/planetary/apod",
+//   return `${year}-${month}-${day}`;
+// }
 
-    params: {
-      date: getFormattedDate(new Date()),
-      api_key,
-    },
-  });
+// function App() {
+//   // const [selectedDate, setSelectedDate] = useState(null);
+//   const [config, setconfig] = useState({
+//     method: "GET",
+//     url: "/planetary/apod",
 
-  const [{ data, loading, error }, api] = axiosCall(config, { manual: true });
+//     params: {
+//       date: getFormattedDate(new Date()),
+//       api_key,
+//     },
+//   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    api(config);
-  };
+//   const [{ data, loading, error }, api] = axiosCall(config, { manual: true });
 
-  const handleChange = (e) => {
-    setconfig({
-      method: "GET",
-      url: "/planetary/apod",
-      params: {
-        date: e.target.value,
-        api_key,
-      },
-    });
-    // setSelectedDate(e.target.value);
-    // console.debug("Date Changed:", selectedDate);
-  };
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     api(config);
+//   };
 
-  if (loading) return "null";
-  if (error) return <img src={defaultImg} />;
-  // if(!data) return <img src={defaultImg}/>;
-  const isImageValid = data?.url && data?.media_type === "image";
-  const isVideoValid = data?.url && data?.media_type === "mp3";
+//   const handleChange = (e) => {
+//     setconfig({
+//       method: "GET",
+//       url: "/planetary/apod",
+//       params: {
+//         date: e.target.value,
+//         api_key,
+//       },
+//     });
+//     // setSelectedDate(e.target.value);
+//     // console.debug("Date Changed:", selectedDate);
+//   };
 
-  return (
-    <div className="container">
-      <div className="hero-image">
-        <section className="masthead" role="img" aria-label="Image Description">
-          <h1>Call to the Stars</h1>
-          {/* {!data && <img src={defaultImg} alt="space"/>}
-            {data?.media_type === "image" && <img src={data?.url} alt="space"/>} */}
+//   if (loading) return "null";
+//   if (error) return <img src={defaultImg} />;
+//   // if(!data) return <img src={defaultImg}/>;
+//   const isImageValid = data?.url && data?.media_type === "image";
+//   const isVideoValid = data?.url && data?.media_type === "mp3";
 
-          {isImageValid ? <img src={data?.url} /> : <img src={defaultImg} />}
-          <pre>
-            {/* <code>{JSON.stringify({ data, selectedDate }, null, 2)}</code> */}
-          </pre>
-        </section>
-      </div>
+//   return (
+//     <div className="container">
+//       <div className="hero-image">
+//         <section className="masthead" role="img" aria-label="Image Description">
+//           <h1>Call to the Stars</h1>
+//           {/* {!data && <img src={defaultImg} alt="space"/>}
+//             {data?.media_type === "image" && <img src={data?.url} alt="space"/>} */}
 
-      <div>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="date"
-            id="picker"
-            name="date"
-            min="1970-01-01"
-            max={getFormattedDate(new Date())}
-            onChange={handleChange}
-          />
-          <button type="submit">Explore</button>
-        </form>
-      </div>
-    </div>
-  );
-}
+//           {isImageValid ? <img src={data?.url} /> : <img src={defaultImg} />}
+//           <pre>
+//             {/* <code>{JSON.stringify({ data, selectedDate }, null, 2)}</code> */}
+//           </pre>
+//         </section>
+//       </div>
 
-export default App;
+//       <div>
+//         <form onSubmit={handleSubmit}>
+//           <input
+//             type="date"
+//             id="picker"
+//             name="date"
+//             min="1970-01-01"
+//             max={getFormattedDate(new Date())}
+//             onChange={handleChange}
+//           />
+//           <button type="submit">Explore</button>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default App;
