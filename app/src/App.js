@@ -1,12 +1,12 @@
 import React from "react";
 import "./css/App.css";
-import ImagePanel from "./components/ImagePanel"
+import Panel from "./components/Panel"
 
 
 function App() {
   return (
     <div>
-      <ImagePanel/>
+      <Panel/>
     </div>
   );
 }
