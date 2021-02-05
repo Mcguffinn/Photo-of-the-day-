@@ -31,7 +31,6 @@ const Panel = () => {
       const handleSubmit = (e) => {
         e.preventDefault();
         api(config);
-        console.log('Hit', data)
       };
     
       const handleChange = (e) => {
@@ -43,7 +42,6 @@ const Panel = () => {
             api_key,
           },
         });
-        console.log(e.target.value)
       };
 
 
