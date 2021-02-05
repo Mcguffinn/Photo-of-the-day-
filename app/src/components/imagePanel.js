@@ -46,6 +46,22 @@ const ImagePanel = () => {
         console.log(e.target.value)
       };
 
+
+    if (loading){
+        return <Image src={defaultImg} fallback={<Shimmer/>}/>
+    }
+
+    if(error){
+        return (
+            <div className="showcase">
+                <div className="hero-text">
+                    <h3>Uh oh something went wrong!</h3>
+                    <div className="result"><Image src={defaultImg} fallback={<Shimmer/>}/></div>
+                </div>
+            </div>
+            
+        )
+    }
     return (
     <div className="showcase">
         <header className="socials">       
@@ -54,34 +70,43 @@ const ImagePanel = () => {
                 <li><a href="https://www.linkedin.com/in/edwin-deronvil-ab9499177/" target="_blank" rel="noopener noreferrer"><img src={linkedin} alt="linkedin link"/></a></li>
             </ul>
         </header>
-            {data?.media_type === "image" ? (<Image src={data?.url} alt={data.title} fallback={<Shimmer/>}/>):(
-                <video className ="video-wrap"src={globe} muted loop autoPlay="true"/>
+            {data?.media_type === "image" ? (<div className="result"><Image src={data?.url} alt={data.title} fallback={<Shimmer/>}/></div>):(
+                <video className ="video-wrap"src={globe} muted loop autoPlay={true}/>
             )}
             
             <div className ="overlay"></div>
         
         <div className="hero-text">
             <h2>Explore the Stars</h2>
-            <h3> This is a simple implementation of NASA's
+
+            {data == null? (<h3> This is a simple implementation of NASA's
                 <a href="https://api.nasa.gov/" target="APOD">
                    {" APOD "}
                 </a>
                  api. Enjoy browsing the dataset.
-            </h3>
-        <label htmlFor="picker">Date:</label>
-          <input 
-            type="date"
-            id="picker"
-            name="date"
-            min="1970-01-01"
-            max={getFormattedDate(new Date())}
-            onChange={handleChange}
-            />
-        
-        <button variant="contained" onClick={handleSubmit}>
-            Explore
-        </button>            
+            </h3>): <div/>}
+            
+        {/* <label htmlFor="picker">Date:</label> */}
+        <div className="search">
+            <input 
+                type="date"
+                id="picker"
+                name="date"
+                min="1970-01-01"
+                max={getFormattedDate(new Date())}
+                onChange={handleChange}
+                />
+            
+            <button variant="contained" onClick={handleSubmit}>
+                Explore
+            </button> 
         </div>
+          
+        <div>
+            {data?.media_type != null? <p>{data.explanation}</p> : <p></p>}
+        </div>           
+        </div>
+        
     </div>
     )
 }

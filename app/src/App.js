@@ -1,6 +1,6 @@
 import React from "react";
 import "./css/App.css";
-// import defaultImg from "./images/gradient.jpeg";
+// import defaultImg from "./images/gradient.jpeg";-
 import ImagePanel from "./components/ImagePanel"
 // import DataPanel from "./components/DataPanel";
 // import { Container } from "@material-ui/core";
@@ -33,9 +33,9 @@ function App() {
     //     </div>
     //   </Card>
     // </Container>
-    <body>
+    <div>
       <ImagePanel/>
-    </body>
+    </div>
   );
 }
 
