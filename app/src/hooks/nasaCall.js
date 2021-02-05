@@ -1,6 +1,8 @@
 import axios from "axios";
 import { makeUseAxios } from "axios-hooks";
 
+
+
 export const api_key = process.env.REACT_APP_KEY;
 console.log(api_key);
 export const axiosInstance = axios.create({

@@ -1,85 +1,89 @@
-//Defunct Code
+import React, {useState} from "react";
+import axiosCall, { api_key } from "../hooks/nasaCall";
+import defaultImg from "../images/gradient.jpeg";
+import globe from "../images/globe.mp4";
+import github from "../images/github-logo.png"
+import linkedin from "../images/linkedin.png"
+import Image, { Shimmer } from "react-shimmer";
+import "../css/ImagePanel.css"
 
-// import React, { Fragment, useState } from "react";
-// import "./App.css";
-// import axiosCall, { api_key } from "./hooks/nasaCall";
+const ImagePanel = () => {
 
-// function getFormattedDate(date) {
-//   let year = date.getFullYear();
-//   let month = (1 + date.getMonth()).toString().padStart(2, "0");
-//   let day = date.getDate().toString().padStart(2, "0");
+    function getFormattedDate(date) {
+        let year = date.getFullYear();
+        let month = (1 + date.getMonth()).toString().padStart(2, "0");
+        let day = date.getDate().toString().padStart(2, "0");
+      
+        return `${year}-${month}-${day}`;
+    }
 
-//   return `${year}-${month}-${day}`;
-// }
+    const [config, setconfig] = useState({
+        method: "GET",
+        url: "/planetary/apod",
+        params: {
+          date: getFormattedDate(new Date()),
+          api_key,
+        },
+      });
+    
+      const [{ data, loading, error }, api] = axiosCall(config, { manual: true });
+    
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        api(config);
+        console.log('Hit', data)
+      };
+    
+      const handleChange = (e) => {
+        setconfig({
+          method: "GET",
+          url: "/planetary/apod",
+          params: {
+            date: e.target.value,
+            api_key,
+          },
+        });
+        console.log(e.target.value)
+      };
 
-// function App() {
-//   // const [selectedDate, setSelectedDate] = useState(null);
-//   const [config, setconfig] = useState({
-//     method: "GET",
-//     url: "/planetary/apod",
+    return (
+    <div className="showcase">
+        <header className="socials">       
+            <ul >
+                <li><a href="https://github.com/Mcguffinn/Photo-of-the-day-" target="_blank" rel="noopener noreferrer"> <img src={github} alt="git hub link"/></a></li>
+                <li><a href="https://www.linkedin.com/in/edwin-deronvil-ab9499177/" target="_blank" rel="noopener noreferrer"><img src={linkedin} alt="linkedin link"/></a></li>
+            </ul>
+        </header>
+            {data?.media_type === "image" ? (<Image src={data?.url} alt={data.title} fallback={<Shimmer/>}/>):(
+                <video className ="video-wrap"src={globe} muted loop autoPlay="true"/>
+            )}
+            
+            <div className ="overlay"></div>
+        
+        <div className="hero-text">
+            <h2>Explore the Stars</h2>
+            <h3> This is a simple implementation of NASA's
+                <a href="https://api.nasa.gov/" target="APOD">
+                   {" APOD "}
+                </a>
+                 api. Enjoy browsing the dataset.
+            </h3>
+        <label htmlFor="picker">Date:</label>
+          <input 
+            type="date"
+            id="picker"
+            name="date"
+            min="1970-01-01"
+            max={getFormattedDate(new Date())}
+            onChange={handleChange}
+            />
+        
+        <button variant="contained" onClick={handleSubmit}>
+            Explore
+        </button>            
+        </div>
+    </div>
+    )
+}
 
-//     params: {
-//       date: getFormattedDate(new Date()),
-//       api_key,
-//     },
-//   });
-
-//   const [{ data, loading, error }, api] = axiosCall(config, { manual: true });
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     api(config);
-//   };
-
-//   const handleChange = (e) => {
-//     setconfig({
-//       method: "GET",
-//       url: "/planetary/apod",
-//       params: {
-//         date: e.target.value,
-//         api_key,
-//       },
-//     });
-//     // setSelectedDate(e.target.value);
-//     // console.debug("Date Changed:", selectedDate);
-//   };
-
-//   if (loading) return "null";
-//   if (error) return <img src={defaultImg} />;
-//   // if(!data) return <img src={defaultImg}/>;
-//   const isImageValid = data?.url && data?.media_type === "image";
-//   const isVideoValid = data?.url && data?.media_type === "mp3";
-
-//   return (
-//     <div className="container">
-//       <div className="hero-image">
-//         <section className="masthead" role="img" aria-label="Image Description">
-//           <h1>Call to the Stars</h1>
-//           {/* {!data && <img src={defaultImg} alt="space"/>}
-//             {data?.media_type === "image" && <img src={data?.url} alt="space"/>} */}
-
-//           {isImageValid ? <img src={data?.url} /> : <img src={defaultImg} />}
-//           <pre>
-//             {/* <code>{JSON.stringify({ data, selectedDate }, null, 2)}</code> */}
-//           </pre>
-//         </section>
-//       </div>
-
-//       <div>
-//         <form onSubmit={handleSubmit}>
-//           <input
-//             type="date"
-//             id="picker"
-//             name="date"
-//             min="1970-01-01"
-//             max={getFormattedDate(new Date())}
-//             onChange={handleChange}
-//           />
-//           <button type="submit">Explore</button>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default App;
+export default ImagePanel
