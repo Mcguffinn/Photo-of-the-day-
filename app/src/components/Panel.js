@@ -35,9 +35,6 @@ const Panel = (props) => {
 
   const [clicked, setClick] = useState(false);
 
-  const toggle = () => {
-    return clicked === false ? setClick(true) : setClick(false);
-  };
   const handleSubmit = (e) => {
     e.preventDefault();
     api(config);
