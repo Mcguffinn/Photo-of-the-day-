@@ -11,8 +11,5 @@ export const axiosInstance = axios.create({
   },
 });
 
-const newInstance = axios.create({
-  // new other api's defualt settings
-});
 
-export default makeUseAxios({ axios: axiosInstance, newInstance });
+export default makeUseAxios({ axios: axiosInstance });

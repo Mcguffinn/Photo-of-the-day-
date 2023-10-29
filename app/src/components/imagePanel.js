@@ -66,8 +66,8 @@ const ImagePanel = () => {
     <div className="showcase">
         <header className="socials">       
             <ul >
-                <li><a href="https://github.com/Mcguffinn/Photo-of-the-day-" target="_blank" rel="noopener noreferrer"> <img src={github} alt="git hub link"/></a></li>
-                <li><a href="https://www.linkedin.com/in/edwin-deronvil-ab9499177/" target="_blank" rel="noopener noreferrer"><img src={linkedin} alt="linkedin link"/></a></li>
+                <li><a href={`${process.env.REACT_APP_GIT_URL}`} target="_blank" rel="noopener noreferrer"> <img src={github} alt="git hub link"/></a></li>
+                <li><a href={`${process.env.REACT_APP_LINKED_URL}`} rel="noopener noreferrer"><img src={linkedin} alt="linkedin link"/></a></li>
             </ul>
         </header>
             {data?.media_type === "image" ? (<div className="result"><Image src={data?.url} alt={data.title} fallback={<Shimmer/>}/></div>):(

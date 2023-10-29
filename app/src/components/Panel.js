@@ -1,19 +1,21 @@
 import React, { useState } from "react";
+import Navbar from "./Navbar";
 import axiosCall, { api_key } from "../hooks/nasaCall";
+import defaultImg from "../images/gradient.jpeg";
+import globe from "../images/globe.mp4";
+import Image, { Shimmer } from "react-shimmer";
 import {
   AccordionSection,
   Container,
   Wrap,
   Dropdown,
 } from "../styled/Accordian.js";
-import defaultImg from "../images/gradient.jpeg";
-import globe from "../images/globe.mp4";
-import github from "../images/github-logo.png";
-import linkedin from "../images/linkedin.png";
-import Image, { Shimmer } from "react-shimmer";
-import "../css/ImagePanel.css";
 
-const Panel = (props) => {
+
+
+const Panel = () => {
+
+  // Formats the input date from the form that the api likes
   function getFormattedDate(date) {
     let year = date.getFullYear();
     let month = (1 + date.getMonth()).toString().padStart(2, "0");
@@ -21,6 +23,7 @@ const Panel = (props) => {
 
     return `${year}-${month}-${day}`;
   }
+
 
   const [config, setconfig] = useState({
     method: "GET",
@@ -69,29 +72,7 @@ const Panel = (props) => {
   }
   return (
     <div className="showcase">
-      <header className="socials">
-        <ul>
-          <li>
-            <a
-              href="https://github.com/Mcguffinn/Photo-of-the-day-"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {" "}
-              <img src={github} alt="git hub link" />
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://www.linkedin.com/in/edwin-deronvil-ab9499177/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src={linkedin} alt="linkedin link" />
-            </a>
-          </li>
-        </ul>
-      </header>
+      <Navbar/>
       {data?.media_type === "image" ? (
         <div className="result">
           <Image src={data?.url} alt={data.title} fallback={<Shimmer />} />
@@ -99,8 +80,6 @@ const Panel = (props) => {
       ) : (
         <video className="video-wrap" src={globe} muted loop autoPlay={true} />
       )}
-
-      <div className="overlay"></div>
 
       <div className="hero-text">
         <a href=".">
@@ -120,7 +99,6 @@ const Panel = (props) => {
           <div />
         )}
 
-        {/* <label htmlFor="picker">Date:</label> */}
         <div className="search">
           <input
             type="date"
@@ -135,7 +113,7 @@ const Panel = (props) => {
             Explore
           </button>
         </div>
-
+        
         <AccordionSection>
           <Container>
             {data?.media_type != null ? (
@@ -160,6 +138,7 @@ const Panel = (props) => {
         </AccordionSection>
       </div>
     </div>
+    
   );
 };
 

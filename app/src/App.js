@@ -1,5 +1,5 @@
 import React from "react";
-import "./css/App.css";
+import "../src/css/App.css";
 import Panel from "./components/Panel"
 
 
