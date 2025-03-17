@@ -1,11 +1,5 @@
 import React, { useState } from "react";
 import axiosCall, { api_key } from "../hooks/nasaCall";
-import {
-  AccordionSection,
-  Container,
-  Wrap,
-  Dropdown,
-} from "../styled/Accordian.js";
 import defaultImg from "../images/gradient.jpeg";
 import globe from "../images/globe.mp4";
 import github from "../images/github-logo.png";
