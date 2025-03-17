@@ -13,6 +13,7 @@
     background: #111;
     color: #fff;
     z-index: 2;
+    overflow: hidden;
   }
 
 .showcase header{
@@ -47,6 +48,15 @@ ul li{
 }
 
 
+.result {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
 .result img{
     position: absolute;
     top: 0;
@@ -57,7 +67,8 @@ ul li{
     object-fit: cover;
     opacity: 0.8;
 }
-  .overlay{
+
+.overlay{
     position: absolute;
     top: 0;
     left: 0;
@@ -65,18 +76,218 @@ ul li{
     height: 100%;
     background:#274957;
     mix-blend-mode: overlay;
-  }
+}
 
-  .hero-text{
-      padding-top: 200px;
-      padding-left: 2rem;
-      padding-right: 2rem;
-      position: relative;
-      z-index: 10;
-  }
+.hero-text{
+    padding-top: 100px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    position: relative;
+    z-index: 10;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
 
+.hero-text h2 {
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+}
+
+.hero-text h3 {
+    margin-bottom: 20px;
+}
 
 .search{
     display: flex;
     justify-content: center;
+    margin: 20px 0;
+}
+
+.search input {
+    padding: 10px;
+    border: none;
+    border-radius: 5px 0 0 5px;
+}
+
+.search button {
+    padding: 10px 20px;
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.search button:hover {
+    background-color: #303f9f;
+}
+
+/* Explanation Container - Bottom Third */
+.explanation-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 33vh; /* Bottom third of screen */
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.explanation-container.collapsed {
+    height: 40px; /* Just show the control bar when collapsed */
+}
+
+.explanation-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 5px 15px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.explanation-controls button {
+    color: white;
+    margin-left: 10px;
+}
+
+.toggle-button, .opacity-button {
+    color: white !important;
+}
+
+.explanation-content {
+    padding: 5px 20px 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.explanation-container.collapsed .explanation-content {
+    display: none;
+}
+
+.explanation-content h3 {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    text-align: center;
+    width: 100%;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.explanation-content p {
+    line-height: 1.6;
+    text-align: left;
+    width: 100%;
+    max-width: 900px;
+}
+
+/* Make scrollbar nicer */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Loading Animation */
+.loading-animation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.loading-animation p {
+  margin-top: 15px;
+  color: white;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.loading-animation .MuiCircularProgress-root {
+  color: white;
+}
+
+/* Animation for pulsating effect */
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.loading-animation p {
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Error Icon */
+.error-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #f44336;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.loading-animation p {
+  margin-top: 15px;
+  color: white;
+  font-size: 16px;
+  letter-spacing: 1px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.explanation-title {
+    display: block;
+    text-align: center;
+    width: 100%;
+    padding: 10px 0;
+    margin: 0 auto 15px;
+    font-size: 1.6rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }

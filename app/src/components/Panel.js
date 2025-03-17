@@ -10,7 +10,10 @@ import defaultImg from "../images/gradient.jpeg";
 import globe from "../images/globe.mp4";
 import github from "../images/github-logo.png";
 import linkedin from "../images/linkedin.png";
-import Image, { Shimmer } from "react-shimmer";
+import { Skeleton, IconButton, CircularProgress } from "@mui/material";
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import OpacityIcon from '@mui/icons-material/Opacity';
 import "../css/ImagePanel.css";
 
 const Panel = (props) => {
@@ -32,8 +35,16 @@ const Panel = (props) => {
   });
 
   const [{ data, loading, error }, api] = axiosCall(config, { manual: true });
+  const [explanationOpen, setExplanationOpen] = useState(true);
+  const [explanationOpacity, setExplanationOpacity] = useState(0.8);
 
-  const [clicked, setClick] = useState(false);
+  // Toggle explanation opacity between values
+  const toggleOpacity = () => {
+    const opacityValues = [0.2, 0.5, 0.8, 1];
+    const currentIndex = opacityValues.indexOf(explanationOpacity);
+    const nextIndex = (currentIndex + 1) % opacityValues.length;
+    setExplanationOpacity(opacityValues[nextIndex]);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -51,17 +62,143 @@ const Panel = (props) => {
     });
   };
 
+  // Preload HD image if available
+  const preloadHDImage = (url, hdurl) => {
+    if (hdurl && hdurl !== url) {
+      const img = new Image();
+      img.src = hdurl;
+    }
+  };
+
+  // Handle image fetch on initial load
+  React.useEffect(() => {
+    if (data?.url && data?.hdurl && data.hdurl !== data.url) {
+      // Preload HD image if available
+      preloadHDImage(data.url, data.hdurl);
+    }
+  }, [data?.url, data?.hdurl]);
+
+  // Custom image component with loading state
+  const ImageWithSkeleton = ({ src, alt }) => {
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const [loadError, setLoadError] = useState(false);
+    const [loadProgress, setLoadProgress] = useState(0);
+    
+    // Simulate load progress for better user experience
+    React.useEffect(() => {
+      if (!imageLoaded && !loadError) {
+        const interval = setInterval(() => {
+          setLoadProgress((prev) => {
+            // Gradually increase loading progress, maxing at 90% until actual load completes
+            if (prev < 90) {
+              return prev + Math.random() * 10;
+            }
+            return prev;
+          });
+        }, 500);
+        
+        return () => clearInterval(interval);
+      }
+    }, [imageLoaded, loadError]);
+
+    return (
+      <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+        {!imageLoaded && (
+          <>
+            <Skeleton 
+              variant="rectangular" 
+              width="100%" 
+              height="100%" 
+              animation="wave" 
+              style={{ position: 'absolute', top: 0, left: 0 }}
+            />
+            <div className="loading-animation">
+              {loadError ? (
+                <>
+                  <div className="error-icon">!</div>
+                  <p>Failed to load image</p>
+                </>
+              ) : (
+                <>
+                  <CircularProgress 
+                    variant="determinate" 
+                    value={loadProgress} 
+                    size={60} 
+                    thickness={4} 
+                  />
+                  <p>Loading image... {Math.round(loadProgress)}%</p>
+                </>
+              )}
+            </div>
+          </>
+        )}
+        <img 
+          src={src} 
+          alt={alt || ''} 
+          style={{ 
+            width: '100%', 
+            height: '100%', 
+            display: imageLoaded ? 'block' : 'none',
+            objectFit: 'cover',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 0
+          }}
+          onLoad={() => {
+            setLoadProgress(100);
+            setImageLoaded(true);
+          }}
+          onError={() => {
+            setLoadError(true);
+            // After 3 seconds, show the image anyway (might be partially loaded)
+            setTimeout(() => setImageLoaded(true), 3000);
+          }}
+        />
+      </div>
+    );
+  };
+
   if (loading) {
-    return <Image src={defaultImg} fallback={<Shimmer />} />;
+    return (
+      <div className="showcase">
+        <div className="result">
+          <Skeleton variant="rectangular" width="100%" height="100%" animation="wave" />
+          <div className="loading-animation">
+            <CircularProgress size={60} thickness={4} />
+            <p>Loading NASA's astronomy picture...</p>
+          </div>
+        </div>
+        <div className="overlay" style={{ zIndex: 1 }}></div>
+        <div className="hero-text" style={{ zIndex: 2, position: 'relative' }}>
+          <h2>Exploring the stars...</h2>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
+    let errorMessage = "Uh oh something went wrong!";
+    if (error.response) {
+      if (error.response.status === 403) {
+        errorMessage = "Authentication failed. Please check your NASA API key in the .env file.";
+      } else if (error.response.status === 429) {
+        errorMessage = "Rate limit exceeded. The DEMO_KEY has a limited number of requests per hour.";
+      } else if (error.response.status === 400 && error.response.data?.msg) {
+        // If API returns a specific error message (e.g., date format issues)
+        errorMessage = `API Error: ${error.response.data.msg}`;
+      } else {
+        errorMessage = `Error ${error.response.status}: ${error.response.statusText}`;
+      }
+    }
+    
     return (
       <div className="showcase">
         <div className="hero-text">
-          <h3>Uh oh something went wrong!</h3>
+          <h3>{errorMessage}</h3>
+          <p>Try a different date or check the console for more details.</p>
           <div className="result">
-            <Image src={defaultImg} fallback={<Shimmer />} />
+            <ImageWithSkeleton src={defaultImg} alt="Default image" />
           </div>
         </div>
       </div>
@@ -92,17 +229,10 @@ const Panel = (props) => {
           </li>
         </ul>
       </header>
-      {data?.media_type === "image" ? (
-        <div className="result">
-          <Image src={data?.url} alt={data.title} fallback={<Shimmer />} />
-        </div>
-      ) : (
-        <video className="video-wrap" src={globe} muted loop autoPlay={true} />
-      )}
 
-      <div className="overlay"></div>
+      <div className="overlay" style={{ zIndex: 1 }}></div>
 
-      <div className="hero-text">
+      <div className="hero-text" style={{ zIndex: 2, position: 'relative' }}>
         <a href=".">
           <h2>Explore the Stars</h2>
         </a>
@@ -120,7 +250,6 @@ const Panel = (props) => {
           <div />
         )}
 
-        {/* <label htmlFor="picker">Date:</label> */}
         <div className="search">
           <input
             type="date"
@@ -131,34 +260,47 @@ const Panel = (props) => {
             onChange={handleChange}
           />
 
-          <button variant="contained" onClick={handleSubmit}>
+          <button onClick={handleSubmit}>
             Explore
           </button>
         </div>
-
-        <AccordionSection>
-          <Container>
-            {data?.media_type != null ? (
-              <>
-                <Wrap
-                  onClick={() =>
-                    clicked === false ? setClick(true) : setClick(false)
-                  }
-                >
-                  <h1>{data.title}</h1>
-                </Wrap>
-                {clicked === true ? (
-                  <Dropdown>
-                    <p>{data.explanation}</p>
-                  </Dropdown>
-                ) : null}
-              </>
-            ) : (
-              <p></p>
-            )}
-          </Container>
-        </AccordionSection>
       </div>
+
+      {data?.media_type === "image" ? (
+        <div className="result" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+          <ImageWithSkeleton src={data?.hdurl || data?.url} alt={data?.title} />
+        </div>
+      ) : (
+        <video className="video-wrap" src={globe} muted loop autoPlay={true} style={{ zIndex: 0 }} />
+      )}
+
+      {data?.explanation && (
+        <div 
+          className={`explanation-container ${!explanationOpen ? 'collapsed' : ''}`}
+          style={{ opacity: explanationOpacity }}
+        >
+          <div className="explanation-controls">
+            <IconButton 
+              onClick={() => setExplanationOpen(!explanationOpen)} 
+              className="toggle-button"
+              aria-label={explanationOpen ? "Collapse explanation" : "Expand explanation"}
+            >
+              {explanationOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+            </IconButton>
+            <IconButton 
+              onClick={toggleOpacity}
+              className="opacity-button" 
+              aria-label="Toggle opacity"
+            >
+              <OpacityIcon />
+            </IconButton>
+          </div>
+          <div className="explanation-content">
+            <h3 className="explanation-title">{data.title}</h3>
+            <p>{data.explanation}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
